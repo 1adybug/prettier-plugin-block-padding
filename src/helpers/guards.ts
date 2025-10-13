@@ -29,6 +29,7 @@ export interface ExpressionStatementNode extends NodeBase {
 // 判断是否块状语句（会形成作用域或代码块）
 export function isBlockLikeStatement(node: NodeBase): boolean {
     if (!node || typeof node.type !== "string") return false
+
     // 覆盖常见会形成块或作用域的语句/声明
     switch (node.type) {
         case "BlockStatement":
@@ -127,41 +128,53 @@ function isOtherBlockExpression(expr: NodeBase | undefined): boolean {
 // - ExpressionStatement: expression 为 ObjectExpression/ArrayExpression
 export function hasTopLevelObjectOrArrayLiteral(node: NodeBase): boolean {
     if (!node) return false
+
     if (node.type === "VariableDeclaration") {
         const v = node as unknown as VariableDeclarationNode
+
         for (const d of v.declarations || []) {
             const init = d && d.init
+
             if (isObjectOrArrayLiteral(init)) {
                 return true
             }
         }
+
         return false
     }
+
     if (node.type === "ExpressionStatement") {
         const e = node as unknown as ExpressionStatementNode
         if (!e.expression) return false
         return isObjectOrArrayLiteral(e.expression)
     }
+
     return false
 }
 
 // 判断语句是否包含其他块类型表达式（只在多行时留空）
 export function hasOtherBlockExpression(node: NodeBase): boolean {
     if (!node) return false
+
     if (node.type === "VariableDeclaration") {
         const v = node as unknown as VariableDeclarationNode
+
         for (const d of v.declarations || []) {
             const init = d && d.init
+
             if (isOtherBlockExpression(init)) {
                 return true
             }
         }
+
         return false
     }
+
     if (node.type === "ExpressionStatement") {
         const e = node as unknown as ExpressionStatementNode
         if (!e.expression) return false
         return isOtherBlockExpression(e.expression)
     }
+
     return false
 }

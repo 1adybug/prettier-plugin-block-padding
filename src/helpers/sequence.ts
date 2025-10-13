@@ -33,6 +33,7 @@ function shouldPadAroundStatement(stmt: NodeBase, childDoc: Doc): boolean {
 
     // 多行块状语句：需为多行时才留空，避免一行 {} 的情况
     if (!utils.willBreak(childDoc)) return false
+
     if (isBlockLikeStatement(stmt)) return true
 
     // 其他块类型表达式（模板字符串、函数表达式等）：多行时才留空
@@ -57,8 +58,10 @@ function getOriginalEmptyLinesBetween(
 
     // 如果当前节点有前置注释，使用第一个前置注释的起始行
     const comments = anyCurr.comments
+
     if (comments && comments.length > 0) {
         const firstCommentLine = comments[0]?.loc?.start?.line
+
         if (typeof firstCommentLine === "number") {
             currStartLine = firstCommentLine
         }
@@ -79,7 +82,9 @@ export function printStatementSequence(
     print: PrintFn,
 ): Doc {
     const node = path.getValue() as StatementContainer
+
     const parts: Doc[] = []
+
     const body = Array.isArray(node.body) ? node.body : []
 
     // 先收集每个语句的 Doc 以及其是否需要留空
@@ -112,6 +117,7 @@ export function printStatementSequence(
 
             // 插入换行：1 个 hardline 用于分隔语句，额外的 hardline 形成空行
             parts.push(hardline)
+
             for (let j = 0; j < emptyLinesToAdd; j++) {
                 parts.push(hardline)
             }

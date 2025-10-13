@@ -13,11 +13,13 @@ if (a) {
   const d = 1
 }
 const e = 1`
+
     const tsInput = `type A = number
 type B = {
   name: string
 }
 type C = string`
+
     const jsOut = await prettier.format(jsInput, {
         parser: "babel",
         plugins: [plugin],
