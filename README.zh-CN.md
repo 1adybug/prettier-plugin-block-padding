@@ -1,5 +1,7 @@
 # prettier-plugin-block-padding
 
+[English](https://github.com/1adybug/prettier-plugin-block-padding/blob/main/README.md)
+
 **重要声明：本项目完全由 Cursor + Claude 4.5 Sonnet Thinking 生成**
 
 在不改变 Prettier 原有风格与换行决策的前提下，为特定语句在"语句之间"智能插入一个额外的空行，从而提升模块与语义块之间的视觉分组效果。插件基于 Prettier 3 的 estree 打印器按"语句序列"工作，不会改写表达式内部的格式与缩进。
