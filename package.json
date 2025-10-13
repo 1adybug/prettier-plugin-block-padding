@@ -1,0 +1,49 @@
+{
+    "name": "prettier-plugin-block-padding",
+    "version": "0.0.1",
+    "description": "A Prettier plugin that intelligently adds blank lines around code blocks for better visual grouping",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "prepare": "npm run build",
+        "test:quick": "node ./scripts/quick-test.mjs",
+        "format": "prettier --config prettier.config.mjs --write .",
+        "fg": "npm run format && git add . && git commit -m \"✨feature: format\"",
+        "lint": "eslint ."
+    },
+    "keywords": [
+        "prettier",
+        "prettier-plugin",
+        "formatter",
+        "code-formatting",
+        "blank-lines",
+        "spacing",
+        "block-padding",
+        "typescript",
+        "javascript"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {},
+    "devDependencies": {
+        "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
+        "@types/node": "^22.14.1",
+        "glob": "^11.0.3",
+        "prettier": "^3.3.3",
+        "prettier-plugin-organize-imports": "^4.3.0",
+        "typescript": "^5.8.3"
+    },
+    "peerDependencies": {
+        "prettier": "^3.0.0"
+    }
+}

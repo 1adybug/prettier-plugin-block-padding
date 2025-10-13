@@ -1,0 +1,12 @@
+package-lock.json
+pnpm-lock.yaml
+node_modules
+bun.lockb
+bun.lock
+dist
+build
+yarn.lock
+yarn-error.log
+.yarnrc.yml
+.yarn
+test.*
