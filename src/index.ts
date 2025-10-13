@@ -9,7 +9,7 @@ import {
 import babelPlugin from "prettier/plugins/babel"
 import estreePlugin from "prettier/plugins/estree"
 import typescriptPlugin from "prettier/plugins/typescript"
-import { printStatementSequence } from "./helpers/sequence.js"
+import { printStatementSequence } from "./helpers/sequence"
 const { builders } = doc
 const { hardline, indent } = builders
 
