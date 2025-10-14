@@ -167,6 +167,10 @@ Add the plugin to your Prettier configuration (**recommended to place at the end
 - **Parsers**: `babel`, `babel-ts`, `typescript`
 - **Module**: ESM
 
+## ⚠️ Important Notice
+
+**There are serious compatibility issues with the "@ianvs/prettier-plugin-sort-imports" plugin. Please do not use them together!**
+
 ## Scope and Limitations
 
 - Inserts additional blank lines "between statements" in all code blocks (including file top-level, function bodies, if/for/while statement blocks, TS namespace blocks).

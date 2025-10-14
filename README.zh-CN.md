@@ -167,6 +167,10 @@ npm i -D prettier-plugin-block-padding
 - **解析器**：`babel`、`babel-ts`、`typescript`
 - **模块**：ESM
 
+## ⚠️ 重要提示
+
+**与 "@ianvs/prettier-plugin-sort-imports" 插件存在严重兼容性问题，请不要同时使用！**
+
 ## 作用范围与限制
 
 - 在所有代码块（包括文件顶层、函数体、if/for/while 等语句块、TS 命名空间块）内的"语句之间"插入额外空行。
