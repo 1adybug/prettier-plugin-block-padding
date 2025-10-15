@@ -6,9 +6,9 @@ import {
     Plugin as PrettierPlugin,
     Printer,
 } from "prettier"
-import babelPlugin from "prettier/plugins/babel"
-import estreePlugin from "prettier/plugins/estree"
-import typescriptPlugin from "prettier/plugins/typescript"
+import * as babelPlugin from "prettier/plugins/babel"
+import * as estreePlugin from "prettier/plugins/estree"
+import * as typescriptPlugin from "prettier/plugins/typescript"
 import { printStatementSequence } from "./helpers/sequence"
 const { builders } = doc
 const { hardline, indent } = builders
