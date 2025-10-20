@@ -9,7 +9,7 @@ const config = {
     tabWidth: 4,
     arrowParens: "avoid",
     endOfLine: "lf",
-    plugins: ["prettier-plugin-organize-imports", plugin],
+    plugins: [plugin],
 }
 
 export default config

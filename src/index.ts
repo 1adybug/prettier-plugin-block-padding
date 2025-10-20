@@ -49,13 +49,24 @@ function createPatchedEstreePrinter(base: Printer): Printer {
 
         // 处理所有的 BlockStatement（函数体、if/for/while 等语句块）
         if (node.type === "BlockStatement") {
+            const hasBody = Array.isArray(node.body) && node.body.length > 0
+            const anyNode = node as any
+            const hasComments = anyNode.comments && anyNode.comments.length > 0
+
+            // 如果块为空但有注释（如 catch { /* empty */ }），使用基础打印机处理
+            if (!hasBody && hasComments) {
+                return base.print(path, options, print)
+            }
+
+            // 如果块完全为空（没有语句也没有注释）
+            if (!hasBody) return ["{", "}"]
+
+            // 打印语句序列
             const printed = printStatementSequence(
                 path as unknown as any,
                 p => print(p as AstPath) as unknown as Doc,
             )
 
-            const hasBody = Array.isArray(node.body) && node.body.length > 0
-            if (!hasBody) return ["{", "}"]
             // 将 hardline 放入 indent 内部，确保首行也会被缩进
             return ["{", indent([hardline, printed]), hardline, "}"]
         }
