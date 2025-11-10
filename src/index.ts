@@ -71,6 +71,30 @@ function createPatchedEstreePrinter(base: Printer): Printer {
             return ["{", indent([hardline, printed]), hardline, "}"]
         }
 
+        // 处理类的主体（ClassBody）
+        if (node.type === "ClassBody") {
+            const hasBody = Array.isArray(node.body) && node.body.length > 0
+            const anyNode = node as any
+            const hasComments = anyNode.comments && anyNode.comments.length > 0
+
+            // 如果类主体为空但有注释，使用基础打印机处理
+            if (!hasBody && hasComments) {
+                return base.print(path, options, print)
+            }
+
+            // 如果类主体完全为空（没有成员也没有注释）
+            if (!hasBody) return ["{", "}"]
+
+            // 打印类成员序列
+            const printed = printStatementSequence(
+                path as unknown as any,
+                p => print(p as AstPath) as unknown as Doc,
+            )
+
+            // 将 hardline 放入 indent 内部，确保首行也会被缩进
+            return ["{", indent([hardline, printed]), hardline, "}"]
+        }
+
         return base.print(path, options, print)
     }
 
@@ -81,9 +105,10 @@ function createPatchedEstreePrinter(base: Printer): Printer {
             node &&
             (node.type === "Program" ||
                 node.type === "TSModuleBlock" ||
-                node.type === "BlockStatement")
+                node.type === "BlockStatement" ||
+                node.type === "ClassBody")
         ) {
-            // 将 Program、TSModuleBlock 和 BlockStatement 的注释交回给通用注释打印逻辑，避免遗漏
+            // 将 Program、TSModuleBlock、BlockStatement 和 ClassBody 的注释交回给通用注释打印逻辑，避免遗漏
             return false
         }
 

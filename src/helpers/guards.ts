@@ -43,8 +43,60 @@ export function isBlockLikeStatement(node: NodeBase): boolean {
         case "SwitchStatement":
         case "FunctionDeclaration":
         case "ClassDeclaration":
-        // TypeScript: 命名空间/模块声明也视作“块状语句”
+        // TypeScript: 命名空间/模块声明也视作"块状语句"
         case "TSModuleDeclaration":
+        // 类成员中的方法
+        case "MethodDefinition":
+        case "ClassMethod":
+            return true
+        default:
+            return false
+    }
+}
+
+// 判断是否类成员（属性或方法）
+export function isClassMember(node: NodeBase): boolean {
+    if (!node || typeof node.type !== "string") return false
+
+    // 类成员的节点类型
+    switch (node.type) {
+        // 类属性
+        case "PropertyDefinition":
+        case "ClassProperty":
+        // 类方法
+        case "MethodDefinition":
+        case "ClassMethod":
+        // 访问器
+        case "TSAbstractMethodDefinition":
+        case "TSAbstractPropertyDefinition":
+            return true
+        default:
+            return false
+    }
+}
+
+// 判断是否类方法（不包括属性）
+export function isClassMethod(node: NodeBase): boolean {
+    if (!node || typeof node.type !== "string") return false
+
+    switch (node.type) {
+        case "MethodDefinition":
+        case "ClassMethod":
+        case "TSAbstractMethodDefinition":
+            return true
+        default:
+            return false
+    }
+}
+
+// 判断是否类属性（不包括方法）
+export function isClassProperty(node: NodeBase): boolean {
+    if (!node || typeof node.type !== "string") return false
+
+    switch (node.type) {
+        case "PropertyDefinition":
+        case "ClassProperty":
+        case "TSAbstractPropertyDefinition":
             return true
         default:
             return false

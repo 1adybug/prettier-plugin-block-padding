@@ -55,3 +55,24 @@ const {
 }
 
 export {}
+
+class Person {
+    name: string
+    age: number
+
+    toString() {
+        return "Person"
+    }
+
+    getAge() {
+        return this.age
+    }
+}
+
+class Animal {
+    species: string
+
+    makeSound() {
+        console.log("sound")
+    }
+}

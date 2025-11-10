@@ -6,6 +6,9 @@ import {
     hasOtherBlockExpression,
     isBlockLikeStatement,
     isTsTypeDeclaration,
+    isClassMember,
+    isClassMethod,
+    isClassProperty,
 } from "./guards.js"
 const { builders, utils } = doc
 const { hardline } = builders
@@ -30,6 +33,14 @@ function shouldPadAroundStatement(stmt: NodeBase, childDoc: Doc): boolean {
 
     // 对象/数组字面量：无条件留空
     if (hasTopLevelObjectOrArrayLiteral(stmt)) return true
+
+    // 类成员：多行时才留空（如多行方法）
+    if (isClassMember(stmt)) {
+        // 只有多行的类成员才添加空行
+        if (!utils.willBreak(childDoc)) return false
+
+        return true
+    }
 
     // 多行块状语句：需为多行时才留空，避免一行 {} 的情况
     if (!utils.willBreak(childDoc)) return false
@@ -106,7 +117,15 @@ export function printStatementSequence(
             )
 
             // 计算插件规则要求的空行数（0 或 1）
-            const requiredEmptyLines = needPad || (prev && prev.needPad) ? 1 : 0
+            let requiredEmptyLines = needPad || (prev && prev.needPad) ? 1 : 0
+
+            // 特殊处理：类属性和类方法之间应该添加空行（用于分隔不同类型的成员）
+            if (
+                (isClassProperty(body[i - 1]) && isClassMethod(body[i])) ||
+                (isClassMethod(body[i - 1]) && isClassProperty(body[i]))
+            ) {
+                requiredEmptyLines = 1
+            }
 
             // 取两者的最大值，保留原有空行的同时满足插件规则
             // 但限制最多 1 个空行，与 prettier 默认行为保持一致
