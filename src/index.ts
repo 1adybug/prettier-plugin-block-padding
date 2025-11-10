@@ -25,6 +25,15 @@ function createPatchedEstreePrinter(base: Printer): Printer {
 
         // 在 Program、TSModuleBlock 和 BlockStatement 级别改写"语句序列"的拼接逻辑
         if (node.type === "Program") {
+            const hasBody = Array.isArray(node.body) && node.body.length > 0
+            const anyNode = node as any
+            const hasComments = anyNode.comments && anyNode.comments.length > 0
+
+            // 如果 Program 为空但有注释（如只有三斜线指令），使用基础打印机处理
+            if (!hasBody && hasComments) {
+                return base.print(path, options, print)
+            }
+
             // Program 没有包裹符号，直接打印语句序列，并确保以换行结束文件
             const seq = printStatementSequence(
                 path as unknown as any,
