@@ -27,11 +27,50 @@ function createPatchedEstreePrinter(base: Printer): Printer {
         if (node.type === "Program") {
             const hasBody = Array.isArray(node.body) && node.body.length > 0
             const anyNode = node as any
-            const hasComments = anyNode.comments && anyNode.comments.length > 0
+            const allComments = anyNode.comments || []
+            const hasDirectives =
+                Array.isArray(anyNode.directives) &&
+                anyNode.directives.length > 0
 
             // 如果 Program 为空但有注释（如只有三斜线指令），使用基础打印机处理
-            if (!hasBody && hasComments) {
+            if (!hasBody && allComments.length > 0) {
                 return base.print(path, options, print)
+            }
+
+            // 如果 Program 有 directives，使用基础打印机处理
+            // 因为 directives 可能有前置注释，而我们的 printStatementSequence 不处理 directives
+            if (hasDirectives) {
+                return base.print(path, options, print, args)
+            }
+
+            // 检查是否有悬挂注释（dangling comments）
+            // 悬挂注释是那些不附加到任何语句上的注释，通常出现在文件开头或特殊位置
+            let hasDanglingComments = false
+            if (hasBody && allComments.length > 0) {
+                // 收集所有语句上的注释
+                const statementsComments = new Set()
+                anyNode.body.forEach((stmt: any) => {
+                    if (stmt.leadingComments) {
+                        stmt.leadingComments.forEach((c: any) =>
+                            statementsComments.add(c),
+                        )
+                    }
+                    if (stmt.trailingComments) {
+                        stmt.trailingComments.forEach((c: any) =>
+                            statementsComments.add(c),
+                        )
+                    }
+                })
+
+                // 检查是否有注释不在语句上
+                hasDanglingComments = allComments.some(
+                    (c: any) => !statementsComments.has(c),
+                )
+            }
+
+            // 如果有悬挂注释，使用基础打印机处理（避免注释丢失）
+            if (hasDanglingComments) {
+                return base.print(path, options, print, args)
             }
 
             // Program 没有包裹符号，直接打印语句序列，并确保以换行结束文件
